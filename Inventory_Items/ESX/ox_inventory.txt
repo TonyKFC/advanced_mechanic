@@ -1,0 +1,28 @@
+-- Place in ox_inventory/data/items.lua
+ 
+	['repair_kit'] = {
+		label = '维修工具包',
+		weight = 5,
+		stack = true
+	},
+	
+	['wash_tool'] = {
+		label = '清洁工具包',
+		weight = 5,
+		stack = true
+	},
+	['sponge'] = {
+		label = '海绵',
+		weight = 5,
+		stack = true
+	},
+	['dirty_sponge'] = {
+		label = '脏的海绵',
+		weight = 5,
+		stack = true
+	}, 
+	['welding_torch'] = {
+		label = '焊枪',
+		weight = 5,
+		stack = true
+	},
