@@ -8,3 +8,6 @@ INSERT INTO `job_grades` (`id`, `job_name`, `grade`, `name`, `label`, `salary`, 
 
 INSERT INTO `addon_account` (`name`, `label`, `shared`) VALUES ('society_mechanic', 'Mechanic', 1);
 INSERT INTO `addon_account_data` (`id`, `account_name`, `money`, `owner`) VALUES (4, 'society_mechanic', 0, NULL);
+INSERT INTO `addon_inventory` (`name`, `label`, `shared`) VALUES ('society_mechanic', 'Mechanic', 1);
+INSERT INTO `datastore` (`name`, `label`, `shared`) VALUES ('society_mechanic', 'Mechanic', 1);
+INSERT INTO `datastore_data` (`id`, `name`, `owner`, `data`) VALUES (3, 'society_mechanic', NULL, '{}');
