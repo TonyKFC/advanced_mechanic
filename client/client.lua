@@ -529,7 +529,19 @@ end
 
 function onExit()
   insidee = false
+  
 end
+Citizen.CreateThread(function()
+  while true do
+    local sleep = 0
+    if IsControlJustReleased(0, 167) and  not insidee  and ESX.PlayerData.job and ESX.PlayerData.job.name == 'mechanic' then  
+      lib.showContext('mechanicbillingtwo')
+    elseif IsControlJustReleased(0, 177) then      
+      HideUI()
+    end  
+    Citizen.Wait(sleep)
+  end      
+end)  
 local box = lib.zones.box({
   coords = vec3(-201.9793, -1300.0927, 31.2961),
   size = vec3(18, 28, 5),
@@ -593,7 +605,7 @@ lib.registerContext({
 RegisterNetEvent('advanced_mechanic:mechanicbilling')
 AddEventHandler('advanced_mechanic:mechanicbilling', function()
   local closestPlayer, closestDistance = ESX.Game.GetClosestPlayer()
-  local input = lib.inputDialog(locale('billing'), {{ type = "number", label = locale('Amount'), default = 0 }, })
+  local input = lib.inputDialog('账单', {{ type = "number", label = '数量', default = 0 }, })
   if not input then return end
    local amount = tonumber(input[1])
    if amount >0  then
