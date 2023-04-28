@@ -4,6 +4,8 @@ local ox_inventory = exports.ox_inventory
 local insidee = nil
 
 
+local ped = PlayerPedId()
+
 CreateThread(function() 
 
   local Mechanicblip = AddBlipForCoord(-205.1958, -1324.8699,30.9134)
@@ -88,8 +90,7 @@ function unlockcar()
   end
 
   if  weldingtorch >= 1  and DoesEntityExist(vehicle)  then 
-    TriggerServerEvent('hackcar:remove')
- 
+    lib.callback('hackcar:remove', false, function(Player)end)
     if DoesEntityExist(vehicle) then
       TaskStartScenarioInPlace(playerPed, 'WORLD_HUMAN_WELDING', 0, true)
 
@@ -130,8 +131,9 @@ function repaircar()
   local vehicle = ESX.Game.GetVehicleInDirection(playerPed)
   local repairkit = ox_inventory:Search('count', 'repair_kit') 
   if  repairkit >= 1  and DoesEntityExist(vehicle)  then 
-    FreezeEntityPosition(vehicle, true)
-    TriggerServerEvent('repairkit:remove')
+    FreezeEntityPosition(vehicle, true) 
+ 
+     lib.callback('repairkit:remove', false, function(Player)end)
     if DoesEntityExist(vehicle) then
       if lib.progressBar({
         duration = 10000,
@@ -179,8 +181,9 @@ function washing()
   
   local sponge = ox_inventory:Search('count', 'sponge') 
   if  washtool >= 1  and sponge >= 1 and DoesEntityExist(vehicle)  then 
-    FreezeEntityPosition(vehicle, true)
-    TriggerServerEvent('washing:remove')
+    FreezeEntityPosition(vehicle, true) 
+
+    lib.callback('washing:remove', false, function(Player)end)
     if DoesEntityExist(vehicle) then
       if lib.progressBar({
         duration = 5000,
@@ -246,8 +249,7 @@ if lib.progressBar({
 }) then    
 SetVehicleDirtLevel(vehicle, 0)
 FreezeEntityPosition(vehicle, false)
-
-TriggerServerEvent('washing:dirtysponge')
+lib.callback('washing:dirtysponge', false, function(Player)end)
 else   
 
 end
@@ -305,7 +307,9 @@ RegisterNetEvent('washdirtysponge', function()
           rot = vec3(90.0, 0.0, 0.0)
       },
     }) then     
-    TriggerServerEvent('washing:spongeadd')
+    
+    lib.callback('washing:spongeadd', false, function(Player)end)
+
     else   
     
     end
@@ -438,9 +442,9 @@ end
  end
 
  exports.ox_target:addBoxZone({
-  coords = vec3(-198.7028, -1339.9189, 30.8846),
+  coords = vec3(-209.3908, -1338.3741, 30.8904),
   size = vec3(1, 2, 1),
-  rotation = 78.7772,
+  rotation = 269.7522,
   distance = 2,
   debug = false,
 
@@ -551,6 +555,9 @@ local box = lib.zones.box({
   onExit = onExit,
 })
  
+function HideUI()
+  lib.hideTextUI()
+end
 
 
 lib.registerContext({
@@ -580,6 +587,18 @@ lib.registerContext({
         icon = 'right-long',
         
       },
+      {
+        title = '工具箱',
+        description = '工具箱', 
+        event = 'mechanic:toolchest', 
+        icon = 'fa-toolbox',
+      },
+      {
+        title = '雪糕筒',
+        description = '雪糕筒', 
+        event = 'mechanic:roadcone', 
+        icon = 'fa-road-spikes',
+      },
     
   },
  
@@ -595,6 +614,18 @@ lib.registerContext({
         description = '给附件玩家开账单', 
         event = 'advanced_mechanic:mechanicbilling', 
         icon = 'file-lines',
+      }, 
+      {
+        title = '工具箱',
+        description = '工具箱', 
+        event = 'mechanic:toolchest', 
+        icon = 'fa-toolbox',
+      },
+      {
+        title = '雪糕筒',
+        description = '雪糕筒', 
+        event = 'mechanic:roadcone', 
+        icon = 'fa-road-spikes',
       },
     
   },
@@ -723,6 +754,134 @@ RegisterNetEvent('advanced_mechanic:bossmenu')
 AddEventHandler('advanced_mechanic:bossmenu', function()
   TriggerEvent('esx_society:openBossMenu', ESX.PlayerData.job.name, function(data, menu)
     menu.close()
-end, {wash = false})
-end)  
+end, {wash = true})
+end)   
+
+local mechanicmodels = {`prop_toolchest_01`,`prop_roadcone02a`}
+local mechanicoptions = {
+
+ 
+  {
+      event = "mechanic:pickup", 
+      label = "捡起", 
+      icon = 'fa-solid fa-hand',
+      
+      groups = {["mechanic"] = 0},
+
+      distance = 1.2
+
+  },
+}
+exports.ox_target:addModel(mechanicmodels, mechanicoptions)
+
+ 
+
+ 
+ 
+
+ 
+RegisterNetEvent('mechanic:pickup',function(data)
+  NetworkRequestControlOfEntity(data.entity)
+  while not NetworkRequestControlOfEntity(data.entity) do
+      Wait(0)
+  end 
+  if lib.progressCircle({
+    duration = 1000,
+    position = 'toolches',
+    useWhileDead = false,
+    canCancel = true,
+    disable = {
+        car = true,
+    },
+    anim = {
+        dict = 'random@domestic',
+        clip = 'pickup_low'
+    } 
+   
+}) then  
+  
+  DeleteEntity(data.entity)
+
+
+  else 
+  
+ end
+
+   end)
+RegisterNetEvent('mechanic:toolchest',function()
+
+
+  local ped = PlayerPedId()
+  local hash = GetHashKey('prop_toolchest_01')
+  local x, y, z = table.unpack(GetOffsetFromEntityInWorldCoords(ped,0.0,1.0,-0.85))
+  RequestModel(hash)
+  while not HasModelLoaded(hash) do 
+        Wait(0) 
+    end 
+  
+    if lib.progressCircle({
+      duration = 1000,
+      position = 'toolches',
+      useWhileDead = false,
+      canCancel = true,
+      disable = {
+          car = true,
+      },
+      anim = {
+          dict = 'random@domestic',
+          clip = 'pickup_low'
+      } 
+     
+  }) then  
+    
+    toolchest = CreateObjectNoOffset(hash, x, y, z, true, false)
+      SetModelAsNoLongerNeeded(hash)
+      PlaceObjectOnGroundProperly(toolchest) 
+ 
+    else 
+    
+   end
+
+  end)
+
+
+  RegisterNetEvent('mechanic:roadcone',function()
+
+
+    local ped = PlayerPedId()
+    local hash = GetHashKey('prop_roadcone02a')
+    local x, y, z = table.unpack(GetOffsetFromEntityInWorldCoords(ped,0.0,1.0,-0.85))
+    RequestModel(hash)
+    while not HasModelLoaded(hash) do 
+          Wait(0) 
+      end 
+    
+      if lib.progressCircle({
+        duration = 1000,
+        position = 'toolches',
+        useWhileDead = false,
+        canCancel = true,
+        disable = {
+            car = true,
+        },
+        anim = {
+            dict = 'random@domestic',
+            clip = 'pickup_low'
+        } 
+       
+    }) then  
+      
+        roadcone = CreateObjectNoOffset(hash, x, y, z, true, false)
+        SetModelAsNoLongerNeeded(hash)
+        PlaceObjectOnGroundProperly(roadcone) 
+   
+      else 
+      
+     end
+  
+    end)
+ 
+
+
+ 
  
