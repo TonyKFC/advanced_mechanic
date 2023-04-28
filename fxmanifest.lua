@@ -26,4 +26,9 @@ shared_scripts {
 	'@ox_lib/init.lua',
 	'@es_extended/imports.lua', 
   }
- 
+  dependencies {
+	 
+	'oxmysql',
+	'ox_lib',
+	'sy_carkeys',
+}
